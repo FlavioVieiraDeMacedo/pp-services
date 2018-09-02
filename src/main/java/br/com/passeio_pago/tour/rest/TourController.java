@@ -1,4 +1,4 @@
-package br.com.passeio_pago.account.rest;
+package br.com.passeio_pago.tour.rest;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -21,55 +21,55 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.passeio_pago.account.domain.dto.AccountDto;
-import br.com.passeio_pago.account.domain.dto.AccountRegistrationDto;
-import br.com.passeio_pago.account.service.AccountService;
 import br.com.passeio_pago.common.controlle.SimpleCrudCrontroller;
 import br.com.passeio_pago.common.exception.BadRequestException;
 import br.com.passeio_pago.common.exception.ElementNotFoundException;
 import br.com.passeio_pago.common.exception.ElementRegistrationException;
+import br.com.passeio_pago.tour.domain.dto.TourDto;
+import br.com.passeio_pago.tour.domain.dto.TourRegistrationDto;
+import br.com.passeio_pago.tour.service.TourService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(tags = "accounts")
+@Api(tags = "tours")
 @RestController
-@RequestMapping(name = "AccountController", path = { "/accounts" })
-public class AccountController implements SimpleCrudCrontroller<AccountDto, Long, AccountRegistrationDto> {
+@RequestMapping(name = "TourController", path = { "/tours" })
+public class TourController implements SimpleCrudCrontroller<TourDto, Long, TourRegistrationDto> {
 
 	@Autowired
-	private AccountService accountService;
+	private TourService tourService;
 
 	@GetMapping("/all")
-	@ApiOperation(value = "get all accounts", tags = "accounts")
+	@ApiOperation(value = "get all tours", tags = "tours")
 	@Override
-	public Resources<AccountDto> getAll() {
-		List<AccountDto> all = accountService.getAll();
-		List<Link> links = all.stream().map(account -> linkTo(methodOn(getClass()).findByID(account.getId())).withSelfRel()).collect(Collectors.toList());
-		return new Resources<AccountDto>(all, links);
+	public Resources<TourDto> getAll() {
+		List<TourDto> all = tourService.getAll();
+		List<Link> links = all.stream().map(tour -> linkTo(methodOn(getClass()).findByID(tour.getId())).withSelfRel()).collect(Collectors.toList());
+		return new Resources<TourDto>(all, links);
 	}
 
 	@PostMapping("/register")
-	@ApiOperation(value = "Registers a new account.", tags = "accounts")
+	@ApiOperation(value = "Registers a new tour.", tags = "tours")
 	@Override
-	public Resource<AccountDto> register(@RequestBody @Valid AccountRegistrationDto registerDto) throws ElementRegistrationException {
-		AccountDto dto = accountService.register(registerDto);
+	public Resource<TourDto> register(@RequestBody @Valid TourRegistrationDto registerDto) throws ElementRegistrationException {
+		TourDto dto = tourService.register(registerDto);
 		Link link = linkTo(methodOn(getClass()).findByID(dto.getId())).withSelfRel();
-		return new Resource<AccountDto>(dto, link);
+		return new Resource<TourDto>(dto, link);
 	}
 
 	@DeleteMapping("/{id}")
-	@ApiOperation(value = "Delete account by id.", tags = "accounts")
+	@ApiOperation(value = "Delete tour by id.", tags = "tours")
 	@Override
 	public ResponseEntity<Object> deleteById(@PathVariable(name = "id") Long id) throws BadRequestException, ElementNotFoundException {
-		accountService.deleteById(id);
+		tourService.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{id}")
-	@ApiOperation(value = "Get account by id.", tags = "accounts")
+	@ApiOperation(value = "Get tour by id.", tags = "tours")
 	@Override
-	public AccountDto findByID(@PathVariable(name = "id") Long id) throws BadRequestException, ElementNotFoundException {
-		return accountService.findByID(id);
+	public TourDto findByID(@PathVariable(name = "id") Long id) throws BadRequestException, ElementNotFoundException {
+		return tourService.findByID(id);
 	}
 
 }
